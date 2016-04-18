@@ -1,0 +1,13 @@
+[user]
+	name = mtavano
+	email = chelotavano.udp@gmail.com
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[alias]
+  edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; nvim `f`"
+  add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
+[pager]
+	diff = diff-so-fancy | less --tabs=4 -RFX
+<Paste>

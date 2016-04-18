@@ -3,7 +3,7 @@
 
 
 # RVM settings
-if [[ -s ~/.rvm/scripts/rvm ]] ; then 
+if [[ -s ~/.rvm/scripts/rvm ]] ; then
   RPS1="%{$fg[yellow]%}rvm:%{$reset_color%}%{$fg[red]%}\$(~/.rvm/bin/rvm-prompt)%{$reset_color%} $EPS1"
 else
   if which rbenv &> /dev/null; then
@@ -24,8 +24,9 @@ function get_pwd() {
 }
 
 function put_spacing() {
- 
+
 }
 local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ %s)"
 PROMPT='$fg[blue]%m $fg[white] in  $fg[yellow]$(get_pwd)$(put_spacing)$(git_prompt_info)%{$reset_color%}%B%b
 〉'
+
