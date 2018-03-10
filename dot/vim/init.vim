@@ -6,20 +6,24 @@ scriptencoding utf8
 
 " Set up vim-plug if missing and install plugins
 
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !mkdir -p ~/.config/nvim/autoload
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim
-        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  augroup plug_install
-    au!
-    au! VimEnter * PlugInstall
-  augroup END
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 call plug#begin('~/.config/nvim/plugged')
 " ==================================================
 " Syntax highlight and language specific
 " ==================================================
+" YouCompleteMe
+ Plug 'Valloric/YouCompleteMe', {
+      \ 'do': './install.py --clang-completer --gocode-completer --system-libclang'
+      \ }
+" YCM config generator
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" Tmux
+Plug 'keith/tmux.vim'
 " Markdown
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
@@ -27,9 +31,12 @@ Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 Plug 'cespare/vim-toml', { 'for': 'toml' }
 " Javascript
 Plug 'othree/yajs.vim', { 'for': 'javascript' }
+Plug 'othree/javascript-libraries-syntax.vim'
+let g:used_javascript_libd = 'chai'
 " Python
 Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
 " Ruby!
+"Plug 'tpope/vim-vinegar' // TODO: REVIEW THIS PLUGIN
 Plug 'tpope/vim-bundler', { 'for': 'ruby' }
 Plug 'tpope/vim-rake', { 'for': 'ruby' }
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
@@ -37,11 +44,20 @@ Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 Plug 'ngmy/vim-rubocop', { 'for': 'ruby' }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': 'ruby' } | Plug 'kana/vim-textobj-user'
 Plug 'janko-m/vim-test', { 'for': ['ruby', 'javascript'] }
+" Typescript
+if !exists("g:ycm_semantic_triggers")
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers['typescript'] = ['.']
+
 
 
 " ==================================================
 " UI and utilities
 " ==================================================
+" Typescript plugin
+Plug 'leafgarland/typescript-vim'
+" Surround plugin
 Plug 'tpope/vim-surround'
 " Vim script for text filtering and alignment
 Plug 'godlygeek/tabular'
@@ -54,12 +70,15 @@ Plug 'tpope/vim-fugitive'
 " Better scrolling
 Plug 'terryma/vim-smooth-scroll'
 " Better color schemes.
-Plug 'w0ng/vim-hybrid'
-Plug 'easysid/mod8.vim'
-Plug 'morhetz/gruvbox'
-Plug 'jonathanfilip/vim-lucius'
-Plug 'chriskempson/vim-tomorrow-theme'
+Plug 'endel/vim-github-colorscheme'
+Plug 'chriskempson/base16-vim'
+Plug 'junegunn/seoul256.vim'
 Plug 'mkarmona/colorsbox'
+Plug 'juanedi/predawn.vim'
+Plug 'nanotech/jellybeans.vim'
+Plug 'jacoborus/tender'
+Plug 'chriskempson/tomorrow-theme'
+"Plug 'chriskempson/tomorrow-theme'
 " A tree explorer
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 " Better statusline
@@ -77,18 +96,19 @@ Plug 'suan/vim-instant-markdown'
 " ==================================================
 " Development tools and facilities
 " ==================================================
+" Projectionist
+Plug 'tpope/vim-projectionist'
+" Go vim plugin.
+let g:go_fmt_command = 'goimports'
+Plug 'fatih/vim-go'
+"Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
+
 " Enahanced search tool.
 Plug 'mileszs/ack.vim'
 " End helper
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-endwise'
-" YouCompleteMe
- Plug 'Valloric/YouCompleteMe', {
-      \ 'do': './install.py --clang-completer --gocode-completer --system-libclang'
-      \ }
-" YCM config generator
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-" UltiSnips
+"" UltiSnips
 Plug 'SirVer/ultisnips'
 " Snnipets collection
 Plug 'honza/vim-snippets'
@@ -106,10 +126,11 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'mrtazz/DoxygenToolkit.vim'
 " Dash integration
 Plug 'rizzatti/dash.vim'
-" CMake integration
-Plug 'feed57005/vim-cmakeproj'
 " Tag bar
 Plug 'majutsushi/tagbar'
+" tmux plug
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'christoomey/vim-tmux-runner'
 call plug#end()
 
 filetype plugin indent on " required for Vim-Plug
@@ -119,19 +140,21 @@ filetype plugin indent on " required for Vim-Plug
 " ==================================================
 
 syntax enable
-"set background=dark
+set background=dark
 
-" Gruvbox related
-let g:gruvbox_bold=1
-let g:gruvbox_italic=1
-let g:gruvbox_underline=1
-let g:gruvbox_contrast_dark='light'
-let g:gruvbox_invert_indent_guides=1
-"colorsbox-steighties
-colorscheme colorsbox-steighties
+"colorscheme base16-default-dark
+"colorscheme colorsbox-stbright
+"colorscheme jellybeans
+
+" seoul256 (dark):
+"   Range:   233 (darkest) ~ 239 (lightest)
+"   Default: 237
+let g:seoul256_background = 235
+colorscheme seoul256
+
 set fileencoding=utf-8 nobomb
 set tabstop=2 shiftwidth=2 softtabstop=2 expandtab shiftround
-set number relativenumber
+set relativenumber
 set noswapfile nobackup nowritebackup autowrite
 set showmatch showcmd
 set splitright
@@ -204,6 +227,8 @@ inoremap <C-e> <Esc>A
 inoremap <C-a> <Esc>I
 " Rubocop autocorrect
 let g:vimrubocop_keymap = 0
+" Deoplete
+let g:deoplete#enable_at_startup = 1
 nmap <Leader>ra :RuboCop -a<cr>
 " Exit terminal mode
 tnoremap <Leader>e <C-\><C-n>
@@ -360,7 +385,10 @@ function! VerticalSplitStrategy(cmd)
   vertical botright new | call termopen(a:cmd) | startinsert
 endfunction
 let g:test#custom_strategies = {'terminal_vsplit': function('VerticalSplitStrategy')}
-let g:test#strategy = 'terminal_vsplit'
+let g:test#strategy = 'vtr'
+
+"let g:test#custom_strategies = {'terminal_vsplit': function('VerticalSplitStrategy')}
+"let g:test#strategy = 'terminal_vsplit'
 
 " ==================================================
 " DoxyenToolkit configuration
@@ -401,7 +429,15 @@ let NERDTreeShowHidden=1
 " ==================================================
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
 "vim test yaastrip
-let test#javascript#mocha#options = '--compilers js:babel-register'
+let test#javascript#mocha#options='--compilers js:babel-register --require babel-polyfill'
 " let g:python2_host_prog = '/usr/local/bin/python2'
 let g:python3_host_prog = '/usr/local/bin/python3'
-
+" '=================================================
+" Vim-Go configuration
+" ==================================================
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+au FileType go nmap <Leader>i <Plug>(go-info)
+"let g:go_auto_type_info = 1
