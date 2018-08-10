@@ -16,12 +16,6 @@ call plug#begin('~/.config/nvim/plugged')
 " ==================================================
 " Syntax highlight and language specific
 " ==================================================
-" YouCompleteMe
- Plug 'Valloric/YouCompleteMe', {
-      \ 'do': './install.py --clang-completer --gocode-completer --system-libclang'
-      \ }
-" YCM config generator
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
 " Tmux
 Plug 'keith/tmux.vim'
 " Markdown
@@ -44,13 +38,6 @@ Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
 Plug 'ngmy/vim-rubocop', { 'for': 'ruby' }
 Plug 'nelstrom/vim-textobj-rubyblock', { 'for': 'ruby' } | Plug 'kana/vim-textobj-user'
 Plug 'janko-m/vim-test', { 'for': ['ruby', 'javascript'] }
-" Typescript
-if !exists("g:ycm_semantic_triggers")
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers['typescript'] = ['.']
-
-
 
 " ==================================================
 " UI and utilities
@@ -83,10 +70,12 @@ Plug 'chriskempson/tomorrow-theme'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 " Better statusline
 Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 " Files fuzzy finder
 "Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug '/usr/local/opt/fzf'
 " Multiple Cursors
 Plug 'terryma/vim-multiple-cursors'
 " Indentation mark for scope
@@ -118,8 +107,6 @@ Plug 'ervandew/supertab'
 Plug 'ntpeters/vim-better-whitespace'
 " Autoformat code
 Plug 'Chiel92/vim-autoformat'
-" Linter
-Plug 'benekastah/neomake', { 'on': 'Neomake' }
 " Commenter
 Plug 'scrooloose/nerdcommenter'
 " Doxygen generator
@@ -131,6 +118,17 @@ Plug 'majutsushi/tagbar'
 " tmux plug
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'christoomey/vim-tmux-runner'
+" Deoplete installation
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+"ALE - Linter
+Plug 'w0rp/ale'
+let g:deoplete#enable_at_startup = 1
 call plug#end()
 
 filetype plugin indent on " required for Vim-Plug
@@ -160,7 +158,7 @@ set showmatch showcmd
 set splitright
 set cursorline
 set nofoldenable
-set list listchars=tab:▸\ ,trail:•,extends:»,precedes:«,nbsp:¬
+set list listchars=tab:‚ñ∏\ ,trail:‚Ä¢,extends:¬ª,precedes:¬´,nbsp:¬¨
 set clipboard=unnamed
 set pastetoggle=<F2>
 set completeopt=longest,menu
@@ -175,7 +173,6 @@ set colorcolumn=100
 set guifont=<FONT_NAME>:h<FONT_SIZE>
 set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11
 au BufRead,BufNewFile *.html.mustache set filetype=html
-"au FileType javascript set nocindent
 " load doxygen syntax aumatically
 let g:load_doxygen_syntax=1
 " Make it more obvious which paren I'm on
@@ -202,8 +199,6 @@ noremap <leader>pi :w<cr> :source ~/.config/nvim/init.vim<cr>:PlugInstall<cr>
 noremap <leader>so :w<cr> :source ~/.config/nvim/init.vim<cr>
 " Toggle tree navigator (NERDTree plugin)
 noremap <Leader>k :NERDTreeToggle<cr>
-" Jump to definition (YCM plugin)
-nnoremap <leader>jd :YcmCompleter GoTo<cr>
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
 " Navigates through list of errors
@@ -254,15 +249,15 @@ let g:airline_mode_map = {
       \ 'i'  : 'I',
       \ 'R'  : 'R',
       \ 'v'  : 'V',
-      \ 'V'  : 'V•L',
+      \ 'V'  : 'V‚Ä¢L',
       \ 'c'  : 'C',
-      \ "\026" : 'V•B',
+      \ "\026" : 'V‚Ä¢B',
       \ 's'  : 'S',
-      \ 'S'  : 'S•L',
-      \ "\023" : 'S•B',
+      \ 'S'  : 'S‚Ä¢L',
+      \ "\023" : 'S‚Ä¢B',
       \ }
 " Extensions
-let g:airline#extensions#whitespace#symbol = ""
+let g:airline#extensions#whitespace#symbol = "ÔÅ™"
 
 " ==================================================
 " Web-devicons
@@ -283,34 +278,6 @@ endfunction
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
 nnoremap <C-p> :FZF<cr>
-
-" ==================================================
-" YCM configuration
-" ==================================================
-let ycm_autoclose_preview_window_after_completion = 1
-let ycm_min_num_of_chars_for_completion = 1
-let g:ycm_seed_identifiers_with_syntax = 1
-let g:ycm_enable_diagnostic_highlighting = 1
-let g:ycm_always_populate_location_list = 1
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_error_symbol = '✗'
-let g:ycm_warning_symbol = '!'
-let g:ycm_filetype_blacklist = {
-      \ 'tagbar' : 1,
-      \ 'qf' : 1,
-      \ 'notes' : 1,
-      \ 'markdown' : 1,
-      \ 'unite' : 1,
-      \ 'text' : 1,
-      \ 'vimwiki' : 1,
-      \ 'pandoc' : 1,
-      \ 'infolog' : 1,
-      \ 'mail' : 1
-      \}
-" make YCM compatible with UltiSnips (using supertab)
-let g:ycm_key_list_select_completion = ['<C-j>']
-let g:ycm_key_list_previous_completion = ['<C-k>']
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
 
 " ==================================================
 " UltiSnips configuration
@@ -364,14 +331,6 @@ noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 4, 4)<cr>
 " CMake project configuration
 " ==================================================
 let g:cmakeproj_default_generator = 'make'
-
-" ==================================================
-" Neomake configuration
-" ==================================================
-" Ruby
-let g:neomake_ruby_enabled_maker = ["rubocop", "mri"]
-let g:neomake_javascript_enabled_makers = ['eslint']
-autocmd! BufWritePost * Neomake
 
 " ==================================================
 " Vim-test configuration
