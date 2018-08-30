@@ -1,4 +1,4 @@
-"~/.config/nvim/autoload/airline/themes
+" ~/.config/nvim/plugged/vim-airline-themes/autoload/airline/themes
 let g:airline#themes#jaguirre#palette = {}
 
 " Cool colors:
