@@ -126,9 +126,12 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'zchee/deoplete-go', { 'do': 'make'}
 "ALE - Linter
 Plug 'w0rp/ale'
-let g:deoplete#enable_at_startup = 1
+"React and jsx plugins
+Plug 'panloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 call plug#end()
 
 filetype plugin indent on " required for Vim-Plug
@@ -158,7 +161,7 @@ set showmatch showcmd
 set splitright
 set cursorline
 set nofoldenable
-set list listchars=tab:‚ñ∏\ ,trail:‚Ä¢,extends:¬ª,precedes:¬´,nbsp:¬¨
+set list listchars=tab:‚ñ∏\ ,trail:‚Ä¢,nbsp:¬¨
 set clipboard=unnamed
 set pastetoggle=<F2>
 set completeopt=longest,menu
@@ -193,37 +196,60 @@ endif
 let mapleader = "\<Space>"
 " Open Neo Vim config
 nmap <leader>vi :tabe ~/.config/nvim/init.vim<cr>
+
 " Source .nvimrc and install plugins
 noremap <leader>pi :w<cr> :source ~/.config/nvim/init.vim<cr>:PlugInstall<cr>
+
 " Source .nvimrc
 noremap <leader>so :w<cr> :source ~/.config/nvim/init.vim<cr>
+
 " Toggle tree navigator (NERDTree plugin)
 noremap <Leader>k :NERDTreeToggle<cr>
+
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
+
 " Navigates through list of errors
 nnoremap<leader>ll :ll<cr>
+
 " Toggle search highlight
 command! C nohlsearch
+
 " Toggle tagbar
 nmap <leader>t :TagbarToggle<cr>
+
 " Resize panes
 nmap + <C-W>>
 nmap - <C-W><
+
 " Switch between panes
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
 " Avoid Esc key
 imap jj <Esc>
+
 " Add shortcut to end of line
 inoremap <C-e> <Esc>A
 inoremap <C-a> <Esc>I
+"
 " Rubocop autocorrect
 let g:vimrubocop_keymap = 0
+
 " Deoplete
 let g:deoplete#enable_at_startup = 1
+
+" Ale configuration
+let g:deoplete#enable_at_startup = 1
+let g:ale_sign_error = '‚óè' " Less agressive than the default '>>'
+let g:ale_sign_warning = '!'
+let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+let g:ale_fixers = {}
+let g:ale_fixers['javascript'] = ['prettier']
+let g:ale_fix_on_save = 1
+
 nmap <Leader>ra :RuboCop -a<cr>
 " Exit terminal mode
 tnoremap <Leader>e <C-\><C-n>
@@ -249,15 +275,15 @@ let g:airline_mode_map = {
       \ 'i'  : 'I',
       \ 'R'  : 'R',
       \ 'v'  : 'V',
-      \ 'V'  : 'V‚Ä¢L',
+      \ 'V'  : 'V‚Äö√Ñ¬¢L',
       \ 'c'  : 'C',
-      \ "\026" : 'V‚Ä¢B',
+      \ "\026" : 'V‚Äö√Ñ¬¢B',
       \ 's'  : 'S',
-      \ 'S'  : 'S‚Ä¢L',
-      \ "\023" : 'S‚Ä¢B',
+      \ 'S'  : 'S‚Äö√Ñ¬¢L',
+      \ "\023" : 'S‚Äö√Ñ¬¢B',
       \ }
 " Extensions
-let g:airline#extensions#whitespace#symbol = "ÔÅ™"
+let g:airline#extensions#whitespace#symbol = "√î√Ö‚Ñ¢"
 
 " ==================================================
 " Web-devicons
