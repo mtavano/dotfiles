@@ -120,18 +120,28 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 #
-# Example aliases
+# aliases
+# 
+# Programs related
 alias v="nvim"
 alias v.="nvim ."
-alias zshconfig="nvim ~/.zshrc"
-alias gitconfig="nvim ~/.gitconfig"
-alias gogo="cd ~/Documents/Codes/go/src/github.com/mtavano"
-alias codes="cd ~/Documents/Codes/"
 alias tn="tmux new -s"
 alias ta="tmux attach -t"
+alias tl="tmux list-sessions"
+alias pg="ping 8.8.8.8"
+
+# File shortcuts
+alias zshrc="nvim ~/.zshrc"
+alias gitconfig="nvim ~/.gitconfig"
+
+# Directory shortcuts
+alias gogo="cd ~/Documents/Codes/go/src/github.com/mtavano"
+alias codes="cd ~/Documents/Codes/"
+alias acid="cd ~/Documents/Codes/acid"
+
+# Lazy shortcuts
 alias cl="clear"
 alias x="exit"
-alias pg="ping 8.8.8.8"
 
 function ip() {
   ifconfig | grep inet | grep broadcast | awk '{print $2}'
@@ -155,6 +165,7 @@ export PATH="$PATH:$GOPATH/bin"
 source /Users/mtavano/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 export PATH="$HOME/.bin:$PATH"
+export FZF_DEFAULT_COMMAND='ag --nocolor --ignore node_modules -g ""'
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
