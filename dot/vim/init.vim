@@ -5,11 +5,12 @@
 scriptencoding utf8
 
 " Set up vim-plug if missing and install plugins
+let shouldInstallBundles = 0
 
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall | source $MYVIMRC
+if !filereadable($HOME . "/.config/nvim/autoload/plug.vim")
+  echo "~>‚Ä¢ Installing vim-plug \n"
+  silent !curl -fLo $HOME/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  let shouldInstallBundles = 1
 endif
 
 call plug#begin('~/.config/nvim/plugged')
@@ -23,21 +24,8 @@ Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' }
 " TOML
 Plug 'cespare/vim-toml', { 'for': 'toml' }
-" Javascript
-Plug 'othree/yajs.vim', { 'for': 'javascript' }
-Plug 'othree/javascript-libraries-syntax.vim'
-let g:used_javascript_libd = 'chai'
 " Python
 Plug 'hynek/vim-python-pep8-indent', { 'for': 'python' }
-" Ruby!
-"Plug 'tpope/vim-vinegar' // TODO: REVIEW THIS PLUGIN
-Plug 'tpope/vim-bundler', { 'for': 'ruby' }
-Plug 'tpope/vim-rake', { 'for': 'ruby' }
-Plug 'tpope/vim-rails', { 'for': 'ruby' }
-Plug 'vim-ruby/vim-ruby', { 'for': 'ruby' }
-Plug 'ngmy/vim-rubocop', { 'for': 'ruby' }
-Plug 'nelstrom/vim-textobj-rubyblock', { 'for': 'ruby' } | Plug 'kana/vim-textobj-user'
-Plug 'janko-m/vim-test', { 'for': ['ruby', 'javascript'] }
 
 " ==================================================
 " UI and utilities
@@ -57,7 +45,6 @@ Plug 'tpope/vim-fugitive'
 " Better scrolling
 Plug 'terryma/vim-smooth-scroll'
 " Better color schemes.
-Plug 'endel/vim-github-colorscheme'
 Plug 'chriskempson/base16-vim'
 Plug 'junegunn/seoul256.vim'
 Plug 'mkarmona/colorsbox'
@@ -68,39 +55,34 @@ Plug 'chriskempson/tomorrow-theme'
 "Plug 'chriskempson/tomorrow-theme'
 " A tree explorer
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-" Better statusline
-Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+"eleline Rope
+Plug 'sebastianvera/eleline.vim'
 " Files fuzzy finder
-"Plug 'ctrlpvim/ctrlp.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug '/usr/local/opt/fzf'
+"Plug '/usr/local/opt/fzf'
 " Multiple Cursors
 Plug 'terryma/vim-multiple-cursors'
 " Indentation mark for scope
 Plug 'Yggdroot/indentLine'
-"vim instant markdown
-Plug 'suan/vim-instant-markdown'
+
 " ==================================================
 " Development tools and facilities
 " ==================================================
-" Projectionist
-Plug 'tpope/vim-projectionist'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " Go vim plugin.
 let g:go_fmt_command = 'goimports'
-Plug 'fatih/vim-go'
 "Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
 
 " Enahanced search tool.
 Plug 'mileszs/ack.vim'
 " End helper
 Plug 'jiangmiao/auto-pairs'
-Plug 'tpope/vim-endwise'
 "" UltiSnips
-Plug 'SirVer/ultisnips'
+"Plug 'SirVer/ultisnips'
 " Snnipets collection
-Plug 'honza/vim-snippets'
+"
+"Plug 'honza/vim-snippets'
 " Tab helper
 Plug 'ervandew/supertab'
 " Strip white spaces
@@ -109,30 +91,28 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'Chiel92/vim-autoformat'
 " Commenter
 Plug 'scrooloose/nerdcommenter'
-" Doxygen generator
-Plug 'mrtazz/DoxygenToolkit.vim'
-" Dash integration
-Plug 'rizzatti/dash.vim'
-" Tag bar
-Plug 'majutsushi/tagbar'
 " tmux plug
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'christoomey/vim-tmux-runner'
-" Deoplete installation
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
-Plug 'zchee/deoplete-go', { 'do': 'make'}
 "ALE - Linter
 Plug 'w0rp/ale'
 "React and jsx plugins
-Plug 'panloss/vim-javascript'
-Plug 'mxw/vim-jsx'
+Plug 'MaxMEllon/vim-jsx-pretty'
+" Vim WAKATIME
+Plug 'wakatime/vim-wakatime'
+
+" COC
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' } 
+Plug 'maxmellon/vim-jsx-pretty', { 'for': 'javascript' } 
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'Shougo/echodoc.vim'
+
 call plug#end()
+
+if shouldInstallBundles == 1
+    echo "~> Installing plugs\n"
+    :PlugInstall
+endif
 
 filetype plugin indent on " required for Vim-Plug
 
@@ -155,13 +135,13 @@ colorscheme seoul256
 
 set fileencoding=utf-8 nobomb
 set tabstop=2 shiftwidth=2 softtabstop=2 expandtab shiftround
-set relativenumber
+set number relativenumber
 set noswapfile nobackup nowritebackup autowrite
 set showmatch showcmd
 set splitright
 set cursorline
 set nofoldenable
-set list listchars=tab:‚ñ∏\ ,trail:‚Ä¢,nbsp:¬¨
+set listchars=tab:‚ñ∏\ ,trail:‚Ä¢,extends:¬ª,precedes:¬´,nbsp:¬¨
 set clipboard=unnamed
 set pastetoggle=<F2>
 set completeopt=longest,menu
@@ -196,6 +176,8 @@ endif
 let mapleader = "\<Space>"
 " Open Neo Vim config
 nmap <leader>vi :tabe ~/.config/nvim/init.vim<cr>
+" Rename with coc
+nmap <leader>rn <Plug>(coc-rename)
 
 " Source .nvimrc and install plugins
 noremap <leader>pi :w<cr> :source ~/.config/nvim/init.vim<cr>:PlugInstall<cr>
@@ -238,19 +220,14 @@ inoremap <C-a> <Esc>I
 " Rubocop autocorrect
 let g:vimrubocop_keymap = 0
 
-" Deoplete
-let g:deoplete#enable_at_startup = 1
-
 " Ale configuration
-let g:deoplete#enable_at_startup = 1
-let g:ale_sign_error = '‚óè' " Less agressive than the default '>>'
-let g:ale_sign_warning = '!'
+"let g:ale_sign_error = '‚Äö√Ñ√∂‚àö‚â•¬¨‚àÇ' " Less agressive than the default '>>'
+"let g:ale_sign_warning = '!'
 let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
-let g:ale_fixers = {}
-let g:ale_fixers['javascript'] = ['prettier']
+let g:ale_fixers = {'javascript': ['prettier'], 'scss': ['prettier'], 'typescript': ['prettier']}
 let g:ale_fix_on_save = 1
+let g:ale_javascript_prettier_use_local_config = 1
 
-nmap <Leader>ra :RuboCop -a<cr>
 " Exit terminal mode
 tnoremap <Leader>e <C-\><C-n>
 tnoremap <A-J> <C-\><C-n><C-W><C-J>
@@ -259,36 +236,6 @@ tnoremap <A-L> <C-\><C-n><C-W><C-L>
 tnoremap <A-H> <C-\><C-n><C-W><C-H>
 "nmap k gk
 "nmap j gj
-
-" ==================================================
-" Vim-airline configuration
-" ==================================================
- let g:airline_theme='jaguirre'
-
-let g:airline#extensions#hunks#enabled = 0
-let g:airline#extensions#syntastic#enabled = 0
-let g:airline#extensions#tagbar#enabled = 0
-
-let g:airline_mode_map = {
-      \ '__' : '#',
-      \ 'n'  : 'N',
-      \ 'i'  : 'I',
-      \ 'R'  : 'R',
-      \ 'v'  : 'V',
-      \ 'V'  : 'V‚Äö√Ñ¬¢L',
-      \ 'c'  : 'C',
-      \ "\026" : 'V‚Äö√Ñ¬¢B',
-      \ 's'  : 'S',
-      \ 'S'  : 'S‚Äö√Ñ¬¢L',
-      \ "\023" : 'S‚Äö√Ñ¬¢B',
-      \ }
-" Extensions
-let g:airline#extensions#whitespace#symbol = "√î√Ö‚Ñ¢"
-
-" ==================================================
-" Web-devicons
-" ==================================================
-let g:webdevicons_enable_airline_statusline=0
 
 " ==================================================
 " FZF configuration
@@ -308,12 +255,10 @@ nnoremap <C-p> :FZF<cr>
 " ==================================================
 " UltiSnips configuration
 " ==================================================
-let g:UltiSnipsExpandTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
-let g:UltiSnipsSnippetsDir = '~/.config/nvim/ultisnips'
-let g:UltiSnipsSnippetDirectories = ['ultisnips']
-let g:UltiSnipsEditSplit = 'vertical'
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsUsePythonVersion = 3
 
 " ==================================================
 " VimAutoformat configuration
@@ -424,5 +369,8 @@ let g:go_highlight_methods = 1
 let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
 let g:go_highlight_operators = 1
+let g:go_fmt_command = "goimports"
 au FileType go nmap <Leader>i <Plug>(go-info)
 "let g:go_auto_type_info = 1
+
+inoremap <silent><expr> <c-space> coc#refresh()
